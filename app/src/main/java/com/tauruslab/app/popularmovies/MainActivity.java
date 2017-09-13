@@ -9,26 +9,32 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    private MovieAdapter mMovieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ArrayList<Movie> movies = new ArrayList<>();
+        mMovieAdapter = new MovieAdapter(this, movies);
+
+        FetchMoviesTask moviesTask = new FetchMoviesTask(this, mMovieAdapter);
+        moviesTask.execute();
+
         GridView gridview = findViewById(R.id.gridview_movies);
-        gridview.setAdapter(new ImageAdapter(this));
+        gridview.setAdapter(mMovieAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(MainActivity.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
             }
         });
-
-        FetchMoviesTask moviesTask = new FetchMoviesTask(this);
-        moviesTask.execute();
     }
 
     @Override

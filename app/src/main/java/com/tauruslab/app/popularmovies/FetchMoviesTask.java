@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,38 +15,76 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Criado por Fernando em 10/09/2017.
  * Tarefa para recuperar os filmes da API
  */
 
-public class FetchMoviesTask extends AsyncTask<Void, Void, Void> {
+public class FetchMoviesTask extends AsyncTask<Void, Void, Movie[]> {
 
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     private final Context mContext;
 
-    public FetchMoviesTask(Context context) {
+    private MovieAdapter mMovieAdapter;
+
+    public FetchMoviesTask(Context context, MovieAdapter movieAdapter) {
         mContext = context;
+        mMovieAdapter = movieAdapter;
     }
 
-    private boolean DEBUG = true;
+    private Movie[] getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
 
-    private void getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
+        final String OWM_RESULTS = "results";
+
+        final String OWM_ID = "id";
+        final String OWM_TITLE = "title";
+        final String OWM_POSTER_PATH = "poster_path";
+        final String OWM_OVERVIEW = "overview";
+        final String OWM_RELEASE_DATE = "release_date";
+        final String OWM_VOTE_COUNT = "vote_count";
+
         try {
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
+            JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULTS);
 
-            Log.d(LOG_TAG, moviesJsonStr);
-            Log.d(LOG_TAG, moviesJson.toString());
-        } catch (JSONException e) {
+            Movie[] movies = new Movie[moviesArray.length()];
+            for (int i = 0; i < movies.length; i++) {
+                int id;
+                String title;
+                String posterPath;
+                String overview;
+                Date releaseDate;
+                int voteCount;
+
+                JSONObject movieJson = moviesArray.getJSONObject(i);
+
+                id = movieJson.getInt(OWM_ID);
+                title = movieJson.getString(OWM_TITLE);
+                posterPath = movieJson.getString(OWM_POSTER_PATH);
+                overview = movieJson.getString(OWM_OVERVIEW);
+                releaseDate = Utility.strToDate(movieJson.getString(OWM_RELEASE_DATE));
+                voteCount = movieJson.getInt(OWM_VOTE_COUNT);
+
+                Movie movie = new Movie(id, title, posterPath, overview, releaseDate, voteCount);
+
+                movies[i] = movie;
+            }
+
+            return movies;
+        } catch (JSONException|ParseException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
+
+        return null;
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected Movie[] doInBackground(Void... params) {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -93,7 +132,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, Void> {
             }
 
             moviesJsonStr = builder.toString();
-            getMoviesDataFromJson(moviesJsonStr);
+            return getMoviesDataFromJson(moviesJsonStr);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error", e);
 
@@ -115,5 +154,15 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, Void> {
         }
 
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Movie[] movies) {
+        if (movies != null && mMovieAdapter != null) {
+            mMovieAdapter.clear();
+            for(Movie movie: movies) {
+                mMovieAdapter.add(movie);
+            }
+        }
     }
 }
