@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,34 +23,64 @@ import java.util.List;
 
 public class MovieAdapter extends ArrayAdapter<Movie> {
 
+    private final String LOG_TAG = MovieAdapter.class.getSimpleName();
+
+    private final Activity mContext;
+    private final List<Movie> mMovies;
     private final Picasso mPicasso;
 
     public MovieAdapter(Activity context, List<Movie> movies) {
         super(context, 0, movies);
 
+        mContext = context;
+        mMovies = movies;
+
         mPicasso = new Picasso.Builder(context)
                 .listener(new Picasso.Listener() {
                     @Override
                     public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                        Log.e("PICASSO_FAILED", "URI: " + uri, exception);
+                        Log.e(LOG_TAG, uri.toString(), exception);
                     }
                 })
                 .build();
     }
 
+    @Override
+    public int getCount() {
+        return mMovies.size();
+    }
+
+    @Override
+    public Movie getItem(int position) {
+        return mMovies.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mMovies.get(position).id;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View view = convertView;
+        TextView title;
+        ImageView poster;
+
+        if (view == null) {
+            view = LayoutInflater.from(mContext).inflate(R.layout.grid_item_movie, parent, false);
+            view.setTag(R.id.title, view.findViewById(R.id.title));
+            view.setTag(R.id.poster, view.findViewById(R.id.poster));
+        }
+
+        title = (TextView) view.getTag(R.id.title);
+        poster = (ImageView) view.getTag(R.id.poster);
 
         Movie movie = getItem(position);
 
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_movie, parent, false);
-        }
-
-        ImageView imageView = convertView.findViewById(R.id.list_item_poster);
-
         if(movie != null) {
+            title.setText(movie.title);
+
             String url = movie.getPosterURL();
 
             mPicasso.load(url)
@@ -57,11 +88,12 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                     .error(R.drawable.warning)
                     .resize(800, 800)
                     .centerCrop()
-                    .into(imageView);
+                    .into(poster);
         } else {
-            imageView.setImageResource(R.drawable.warning);
+            title.setText(R.string.movie_not_found);
+            poster.setImageResource(R.drawable.warning);
         }
 
-        return super.getView(position, convertView, parent);
+        return view;
     }
 }

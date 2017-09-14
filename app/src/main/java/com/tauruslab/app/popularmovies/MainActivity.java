@@ -13,15 +13,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MovieAdapter mMovieAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ArrayList<Movie> movies = new ArrayList<>();
-        mMovieAdapter = new MovieAdapter(this, movies);
+        MovieAdapter mMovieAdapter = new MovieAdapter(this, movies);
 
         FetchMoviesTask moviesTask = new FetchMoviesTask(this, mMovieAdapter);
         moviesTask.execute();

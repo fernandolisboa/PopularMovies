@@ -92,19 +92,20 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, Movie[]> {
         String moviesJsonStr = null;
 
         try {
-            final String DATA_MOCK = "2017-09-10";
+            //final String DATA_MOCK = "2017-09-10";
 
             // serão usadas as urls abaixo
             // https://api.themoviedb.org/3/movie/popular?
             // https://api.themoviedb.org/3/movie/top_rated?
-            final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
-            final String RELEASE_DATE_GTE_PARAM = "primary_release_date.gte";
-            final String RELEASE_DATE_LTE_PARAM = "primary_release_date.lte";
+            //final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
+            //final String RELEASE_DATE_GTE_PARAM = "primary_release_date.gte";
+            //final String RELEASE_DATE_LTE_PARAM = "primary_release_date.lte";
+            final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/movie/popular?";
             final String APIKEY_PARAM = "api_key";
 
             Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
-                    .appendQueryParameter(RELEASE_DATE_GTE_PARAM, DATA_MOCK)
-                    .appendQueryParameter(RELEASE_DATE_LTE_PARAM, DATA_MOCK)
+                    //.appendQueryParameter(RELEASE_DATE_GTE_PARAM, DATA_MOCK)
+                    //.appendQueryParameter(RELEASE_DATE_LTE_PARAM, DATA_MOCK)
                     .appendQueryParameter(APIKEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
                     .build();
 
