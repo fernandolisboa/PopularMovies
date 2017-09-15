@@ -1,6 +1,6 @@
 package com.tauruslab.app.popularmovies;
 
-import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,12 +25,12 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
     private final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
-    private final Activity mContext;
+    private final Context mContext;
     private final List<Movie> mMovies;
     private final Picasso mPicasso;
 
-    public MovieAdapter(Activity context, List<Movie> movies) {
-        super(context, 0, movies);
+    public MovieAdapter(Context context, int flags, List<Movie> movies) {
+        super(context, flags, movies);
 
         mContext = context;
         mMovies = movies;
@@ -86,8 +86,8 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             mPicasso.load(url)
                     .placeholder(R.drawable.progress)
                     .error(R.drawable.warning)
-                    .resize(800, 800)
-                    .centerCrop()
+                    .fit()
+                    .centerInside()
                     .into(poster);
         } else {
             title.setText(R.string.movie_not_found);

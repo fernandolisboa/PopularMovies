@@ -25,6 +25,6 @@ public class Movie {
     }
 
     public String getPosterURL() {
-        return "http://image.tmdb.org/t/p/w185/" + posterPath;
+        return "http://image.tmdb.org/t/p/original/" + posterPath;
     }
 }

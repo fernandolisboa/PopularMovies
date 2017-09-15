@@ -5,10 +5,8 @@
 
     <com.tauruslab.app.popularmovies.ui.RectangleImageView
         android:id="@+id/poster"
-        android:minHeight="1200dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/title"

@@ -33,8 +33,8 @@ public class RectangleImageView extends AppCompatImageView {
         try {
             mFixedDimension = a.getInteger(
                     R.styleable.RectangleImageView_fixedDimension, FIXED_DIMENSION_WIDTH);
-            mWidthRatio = a.getInteger(R.styleable.RectangleImageView_widthRatio, 1);
-            mHeightRatio = a.getInteger(R.styleable.RectangleImageView_heightRatio, 2);
+            mWidthRatio = a.getInteger(R.styleable.RectangleImageView_widthRatio, 10);
+            mHeightRatio = a.getInteger(R.styleable.RectangleImageView_heightRatio, 15);
         } finally {
             a.recycle();
         }

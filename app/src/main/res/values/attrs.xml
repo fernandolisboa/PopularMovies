@@ -8,4 +8,12 @@
             <enum name="height" value="1"/>
         </attr>
     </declare-styleable>
+    <string-array name="order_values_array">
+        <item>popular</item>
+        <item>top_rated</item>
+    </string-array>
+    <string-array name="order_keys_array">
+        <item>Popular</item>
+        <item>Top Rated</item>
+    </string-array>
 </resources>
